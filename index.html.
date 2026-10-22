@@ -1,1 +1,116 @@
 
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<title>Reklamuj to</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1020;color:#f4f7fb;font:16px/1.6 system-ui,Arial,sans-serif}
+header,main,footer{width:min(880px,92%);margin:auto}
+header{padding:22px 0;font-size:22px;font-weight:800}
+.logo{display:inline-grid;place-items:center;background:#76f0c2;color:#071a18;border-radius:12px;width:40px;height:40px;margin-right:9px}
+.hero{padding:28px 0}
+.tag{color:#76f0c2;font-size:13px;font-weight:800;letter-spacing:1px}
+h1{font-size:clamp(36px,8vw,58px);line-height:1.08;margin:12px 0}
+h1 span{color:#76f0c2}
+.muted{color:#aab6ca}
+.card{background:#121a2d;border:1px solid #2a3854;border-radius:20px;padding:22px;margin:20px 0}
+label{display:block;font-weight:700;margin:16px 0 7px}
+input,select,textarea{width:100%;padding:13px;background:#0b1020;color:white;border:1px solid #34435f;border-radius:11px;font:inherit}
+textarea{min-height:115px}
+button{padding:13px 17px;border:0;border-radius:11px;font:inherit;font-weight:800;cursor:pointer;margin:12px 8px 0 0}
+.primary{background:#76f0c2;color:#071a18}
+.secondary{background:#24324c;color:white}
+.result{display:none}
+.result.show{display:block}
+.notice{font-size:13px;color:#c5cede;border-left:3px solid #ffd6a0;padding:10px 13px;margin-top:20px}
+a{color:#b5ffe5}
+footer{padding:25px 0;color:#aab6ca;font-size:12px}
+@media(max-width:500px){.card{padding:17px}button{width:100%;margin-right:0}}
+</style>
+</head>
+<body>
+<header><span class="logo">R</span>Reklamuj to</header>
+<main>
+<section class="hero">
+<div class="tag">ZDARMA · BEZ REGISTRACE</div>
+<h1>Reklamace bez <span>zbytečných složitostí.</span></h1>
+<p class="muted">Popiš svůj problém a připrav si návrh zprávy pro prodejce. Text si můžeš upravit a zkopírovat.</p>
+</section>
+<section class="card">
+<h2>Vytvoř návrh reklamace</h2>
+<form id="form">
+<label for="type">Co potřebuješ řešit?</label>
+<select id="type">
+<option value="vada">Vadné zboží</option>
+<option value="zamítnutí">Zamítnutá reklamace</option>
+<option value="zpoždění">Reklamace se dlouho řeší</option>
+<option value="nedoručení">Nedoručená objednávka</option>
+<option value="vrácení">Žádost o vrácení peněz</option>
+<option value="služba">Problém se službou</option>
+</select>
+<label for="seller">Název prodejce nebo firmy</label>
+<input id="seller" placeholder="Např. Název obchodu">
+<label for="item">Zboží nebo číslo objednávky</label>
+<input id="item" placeholder="Např. sluchátka, objednávka 123">
+<label for="date">Datum nákupu (nepovinné)</label>
+<input id="date" placeholder="Např. 12. 10. 2026">
+<label for="details">Popiš, co se stalo</label>
+<textarea id="details" required placeholder="Stručně popiš svůj problém…"></textarea>
+<label for="request">Co požaduješ?</label>
+<select id="request">
+<option>opravu nebo výměnu zboží</option>
+<option>písemné vysvětlení zamítnutí</option>
+<option>informaci o stavu reklamace</option>
+<option>prověření a řešení objednávky</option>
+<option>informaci o možnosti vrácení peněz</option>
+<option>nápravu problému se službou</option>
+</select>
+<button class="primary" type="submit">Vytvořit návrh zprávy ↗</button>
+<button class="secondary" type="reset">Vymazat formulář</button>
+</form>
+<div class="result" id="result">
+<h3>Tvůj návrh zprávy</h3>
+<textarea id="output" aria-label="Vygenerovaný návrh"></textarea>
+<button class="primary" id="copy" type="button">Zkopírovat text</button>
+<p id="status" class="muted"></p>
+</div>
+<div class="notice">Tato stránka poskytuje pouze obecnou pomůcku, nikoliv právní radu. Před odesláním zkontroluj údaje a uprav text podle své situace.</div>
+</section>
+<section class="card">
+<h2>Jak to funguje?</h2>
+<p>1. Vyplň formulář.</p>
+<p>2. Vytvoř návrh zprávy.</p>
+<p>3. Zkontroluj ho a odešli prodejci.</p>
+<p class="muted">Oficiální informace najdeš na <a href="https://coi.gov.cz/" target="_blank" rel="noopener">České obchodní inspekci</a>.</p>
+</section>
+</main>
+<footer>Reklamuj to · Bez registrace. Údaje z formuláře zůstávají v tomto prohlížeči.</footer>
+<script>
+const form=document.getElementById('form');
+const result=document.getElementById('result');
+const output=document.getElementById('output');
+form.addEventListener('submit',function(e){
+e.preventDefault();
+const type=document.getElementById('type').value;
+const seller=document.getElementById('seller').value.trim()||'[název prodejce]';
+const item=document.getElementById('item').value.trim()||'[zboží nebo objednávka]';
+const date=document.getElementById('date').value.trim()||'[datum]';
+const details=document.getElementById('details').value.trim();
+const request=document.getElementById('request').value;
+output.value='Dobrý den,\n\nobracím se na Vás ohledně situace: '+type+'.\n\nProdejce: '+seller+'\nZboží / objednávka: '+item+'\nDatum: '+date+'\n\nPopis situace:\n'+details+'\n\nŽádám Vás o '+request+'. Prosím o písemnou odpověď a informaci o dalším postupu.\n\nDěkuji a přeji hezký den.\n\n[Jméno a příjmení]\n\n--- Návrh vytvořený pomocí Reklamuj to. Před odesláním ověř správnost údajů.';
+result.classList.add('show');
+result.scrollIntoView({behavior:'smooth'});
+});
+form.addEventListener('reset',()=>result.classList.remove('show'));
+document.getElementById('copy').addEventListener('click',async function(){
+try{await navigator.clipboard.writeText(output.value);document.getElementById('status').textContent='Text byl zkopírován.'}
+catch(e){output.focus();output.select();document.getElementById('status').textContent='Označ text a zvol Kopírovat.'}
+});
+</script>
+</body>
+</html>
+
